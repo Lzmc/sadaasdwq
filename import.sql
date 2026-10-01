@@ -1,12 +1,9 @@
 -- =========================================================
--- NPWD DATABASE
--- Compatible with MySQL 8.x / Aiven MySQL
+-- NPWD SQL - MySQL 8 / Aiven compatible
 -- =========================================================
 
--- ---------------------------------------------------------
--- Optional phone_number column
--- Only use this if your `users` table exists and needs it.
--- ---------------------------------------------------------
+-- Optional:
+-- Only enable this if you actually have a `users` table.
 -- ALTER TABLE `users`
 -- ADD COLUMN `phone_number` VARCHAR(20) DEFAULT NULL;
 
@@ -28,8 +25,8 @@ CREATE TABLE IF NOT EXISTS `npwd_twitter_profiles`
     UNIQUE KEY `profile_name_UNIQUE` (`profile_name`),
     KEY `identifier` (`identifier`)
 ) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_general_ci;
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_general_ci;
 
 
 -- =========================================================
@@ -47,8 +44,8 @@ CREATE TABLE IF NOT EXISTS `npwd_phone_contacts`
     PRIMARY KEY (`id`),
     KEY `identifier` (`identifier`)
 ) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_general_ci;
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_general_ci;
 
 
 -- =========================================================
@@ -69,16 +66,16 @@ CREATE TABLE IF NOT EXISTS `npwd_twitter_tweets`
     `profile_id` INT NOT NULL,
 
     PRIMARY KEY (`id`),
-    KEY `npwd_twitter_tweets_profile_id_idx` (`profile_id`),
+    KEY `twitter_tweets_profile_idx` (`profile_id`),
 
-    CONSTRAINT `npwd_twitter_tweets_profile_fk`
+    CONSTRAINT `twitter_tweets_profile_fk`
         FOREIGN KEY (`profile_id`)
         REFERENCES `npwd_twitter_profiles` (`id`)
         ON UPDATE RESTRICT
         ON DELETE RESTRICT
 ) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_general_ci;
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_general_ci;
 
 
 -- =========================================================
@@ -96,17 +93,17 @@ CREATE TABLE IF NOT EXISTS `npwd_twitter_likes`
     KEY `profile_idx` (`profile_id`),
     KEY `tweet_idx` (`tweet_id`),
 
-    CONSTRAINT `npwd_twitter_likes_profile_fk`
+    CONSTRAINT `twitter_likes_profile_fk`
         FOREIGN KEY (`profile_id`)
         REFERENCES `npwd_twitter_profiles` (`id`),
 
-    CONSTRAINT `npwd_twitter_likes_tweet_fk`
+    CONSTRAINT `twitter_likes_tweet_fk`
         FOREIGN KEY (`tweet_id`)
         REFERENCES `npwd_twitter_tweets` (`id`)
         ON DELETE CASCADE
 ) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_general_ci;
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_general_ci;
 
 
 -- =========================================================
@@ -130,8 +127,8 @@ CREATE TABLE IF NOT EXISTS `npwd_match_profiles`
     PRIMARY KEY (`id`),
     UNIQUE KEY `identifier_UNIQUE` (`identifier`)
 ) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_general_ci;
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_general_ci;
 
 
 -- =========================================================
@@ -149,14 +146,14 @@ CREATE TABLE IF NOT EXISTS `npwd_match_views`
 
     PRIMARY KEY (`id`),
     KEY `match_profile_idx` (`profile`),
-    KEY `identifier` (`identifier`),
+    KEY `match_views_identifier_idx` (`identifier`),
 
-    CONSTRAINT `npwd_match_views_profile_fk`
+    CONSTRAINT `match_views_profile_fk`
         FOREIGN KEY (`profile`)
         REFERENCES `npwd_match_profiles` (`id`)
 ) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_general_ci;
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_general_ci;
 
 
 -- =========================================================
@@ -171,10 +168,10 @@ CREATE TABLE IF NOT EXISTS `npwd_notes`
     `content` VARCHAR(255) NOT NULL,
 
     PRIMARY KEY (`id`),
-    KEY `identifier` (`identifier`)
+    KEY `notes_identifier_idx` (`identifier`)
 ) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_general_ci;
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_general_ci;
 
 
 -- =========================================================
@@ -196,10 +193,10 @@ CREATE TABLE IF NOT EXISTS `npwd_marketplace_listings`
     `reported` TINYINT NOT NULL DEFAULT 0,
 
     PRIMARY KEY (`id`),
-    KEY `identifier` (`identifier`)
+    KEY `marketplace_identifier_idx` (`identifier`)
 ) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_general_ci;
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_general_ci;
 
 
 -- =========================================================
@@ -217,17 +214,17 @@ CREATE TABLE IF NOT EXISTS `npwd_twitter_reports`
     KEY `profile_idx` (`profile_id`),
     KEY `tweet_idx` (`tweet_id`),
 
-    CONSTRAINT `npwd_twitter_reports_profile_fk`
+    CONSTRAINT `twitter_reports_profile_fk`
         FOREIGN KEY (`profile_id`)
         REFERENCES `npwd_twitter_profiles` (`id`),
 
-    CONSTRAINT `npwd_twitter_reports_tweet_fk`
+    CONSTRAINT `twitter_reports_tweet_fk`
         FOREIGN KEY (`tweet_id`)
         REFERENCES `npwd_twitter_tweets` (`id`)
         ON DELETE CASCADE
 ) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_general_ci;
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_general_ci;
 
 
 -- =========================================================
@@ -245,16 +242,14 @@ CREATE TABLE IF NOT EXISTS `npwd_messages`
     `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `visible` TINYINT NOT NULL DEFAULT 1,
     `author` VARCHAR(255) NOT NULL,
-
-    -- Embed support
     `is_embed` TINYINT NOT NULL DEFAULT 0,
     `embed` VARCHAR(512) NOT NULL DEFAULT '',
 
     PRIMARY KEY (`id`),
-    KEY `user_identifier` (`user_identifier`)
+    KEY `messages_user_identifier_idx` (`user_identifier`)
 ) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_general_ci;
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_general_ci;
 
 
 -- =========================================================
@@ -273,8 +268,8 @@ CREATE TABLE IF NOT EXISTS `npwd_messages_conversations`
 
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_general_ci;
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_general_ci;
 
 
 -- =========================================================
@@ -289,16 +284,16 @@ CREATE TABLE IF NOT EXISTS `npwd_messages_participants`
     `unread_count` INT DEFAULT 0,
 
     PRIMARY KEY (`id`),
-    KEY `message_participants_conversation_idx` (`conversation_id`),
+    KEY `participants_conversation_idx` (`conversation_id`),
 
-    CONSTRAINT `npwd_messages_participants_conversation_fk`
+    CONSTRAINT `participants_conversation_fk`
         FOREIGN KEY (`conversation_id`)
         REFERENCES `npwd_messages_conversations` (`id`)
         ON UPDATE RESTRICT
         ON DELETE RESTRICT
 ) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_general_ci;
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_general_ci;
 
 
 -- =========================================================
@@ -317,10 +312,10 @@ CREATE TABLE IF NOT EXISTS `npwd_calls`
     `end` VARCHAR(255) DEFAULT NULL,
 
     PRIMARY KEY (`id`),
-    KEY `identifier` (`identifier`)
+    KEY `calls_identifier_idx` (`identifier`)
 ) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_general_ci;
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_general_ci;
 
 
 -- =========================================================
@@ -334,10 +329,10 @@ CREATE TABLE IF NOT EXISTS `npwd_phone_gallery`
     `image` VARCHAR(255) NOT NULL,
 
     PRIMARY KEY (`id`),
-    KEY `identifier` (`identifier`)
+    KEY `gallery_identifier_idx` (`identifier`)
 ) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_general_ci;
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_general_ci;
 
 
 -- =========================================================
@@ -351,12 +346,12 @@ CREATE TABLE IF NOT EXISTS `npwd_darkchat_channels`
     `label` VARCHAR(255) DEFAULT '',
 
     PRIMARY KEY (`id`),
-    UNIQUE KEY `darkchat_channels_channel_identifier_uindex`
+    UNIQUE KEY `darkchat_channels_identifier_uindex`
         (`channel_identifier`)
 ) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_general_ci
-  AUTO_INCREMENT=20;
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_general_ci
+AUTO_INCREMENT=20;
 
 
 -- =========================================================
@@ -369,16 +364,16 @@ CREATE TABLE IF NOT EXISTS `npwd_darkchat_channel_members`
     `user_identifier` VARCHAR(255) NOT NULL COLLATE utf8mb4_general_ci,
     `is_owner` TINYINT NOT NULL DEFAULT 0,
 
-    KEY `darkchat_channel_members_channel_idx` (`channel_id`),
+    KEY `darkchat_members_channel_idx` (`channel_id`),
 
-    CONSTRAINT `npwd_darkchat_channel_members_channel_fk`
+    CONSTRAINT `darkchat_members_channel_fk`
         FOREIGN KEY (`channel_id`)
         REFERENCES `npwd_darkchat_channels` (`id`)
         ON UPDATE RESTRICT
         ON DELETE RESTRICT
 ) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_general_ci;
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_general_ci;
 
 
 -- =========================================================
@@ -403,6 +398,6 @@ CREATE TABLE IF NOT EXISTS `npwd_darkchat_messages`
         ON UPDATE RESTRICT
         ON DELETE RESTRICT
 ) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_general_ci
-  AUTO_INCREMENT=31;
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_general_ci
+AUTO_INCREMENT=31;

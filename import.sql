@@ -362,19 +362,18 @@ CREATE TABLE IF NOT EXISTS `npwd_darkchat_channel_members`
 (
     `channel_id` INT NOT NULL,
     `user_identifier` VARCHAR(255) NOT NULL COLLATE utf8mb4_general_ci,
-    `is_owner` TINYINT NOT NULL DEFAULT 0,
 
-    KEY `darkchat_members_channel_idx` (`channel_id`),
+    PRIMARY KEY (`channel_id`, `user_identifier`),
+    KEY `darkchat_channel_members_channel_idx` (`channel_id`),
 
-    CONSTRAINT `darkchat_members_channel_fk`
+    CONSTRAINT `npwd_darkchat_channel_members_channel_fk`
         FOREIGN KEY (`channel_id`)
         REFERENCES `npwd_darkchat_channels` (`id`)
         ON UPDATE RESTRICT
         ON DELETE RESTRICT
 ) ENGINE=InnoDB
-DEFAULT CHARSET=utf8mb4
-COLLATE=utf8mb4_general_ci;
-
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_general_ci;
 
 -- =========================================================
 -- DARKCHAT MESSAGES

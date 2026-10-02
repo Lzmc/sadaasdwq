@@ -362,6 +362,7 @@ CREATE TABLE IF NOT EXISTS `npwd_darkchat_channel_members`
 (
     `channel_id` INT NOT NULL,
     `user_identifier` VARCHAR(255) NOT NULL COLLATE utf8mb4_general_ci,
+    `is_owner` TINYINT NOT NULL DEFAULT 0,
 
     PRIMARY KEY (`channel_id`, `user_identifier`),
     KEY `darkchat_channel_members_channel_idx` (`channel_id`),
